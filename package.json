@@ -1,0 +1,19 @@
+{
+  "name": "sideswipe-core",
+  "version": "1.0.0",
+  "description": "The core of Sideswipe, to be used with an interface and ide hooks",
+  "main": "index.js",
+  "author": "Brandon Bakker",
+  "license": "GPLv3",
+  "dependencies": {
+    "babylon": "^6.17.4",
+    "bluebird": "^3.5.0",
+    "global": "^4.3.2",
+    "ramda": "^0.24.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.0.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.3.0"
+  }
+}
