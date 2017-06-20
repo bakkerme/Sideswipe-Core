@@ -8,6 +8,7 @@
   "dependencies": {
     "babylon": "^6.17.4",
     "bluebird": "^3.5.0",
+    "find-node-modules": "^1.0.4",
     "global": "^4.3.2",
     "ramda": "^0.24.1",
     "resolve": "^1.3.3"
