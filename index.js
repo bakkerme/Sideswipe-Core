@@ -38,33 +38,43 @@ function getDependanciesFromFile(fileName) {
   });
 }
 
+function transformImportString(importString) {
+  const reg = /^\.\//;
+  return importString.replace(reg, '');
+}
+
+function transformInputToPath(input) {
+  const reg = /\/.*$/g;
+  return input.replace(reg, '');
+}
+
+function getDirectoryOfInputFile(input) {
+  return `${process.cwd()}/${transformInputToPath(input)}`;
+}
+
+function getProjectRoot(input) {
+  const dir = findNodeModules({cwd: input, relative: false})[0];
+  return dir.replace('node_modules', '');
+}
+
 function resolveDependancyToFile(dependancyName) {
   return new Promise((resolve, reject) => {
     try {
-      console.log(findNodeModules());
-      resolveDependancy(dependancyName, { basedir: findNodeModules()[0] + '/' + dependancyName }, (val) => {
-        resolve(val);
+      //In the case of relative paths i.e. ./components/component, we need to use the path of the 
+      //input file to resolve it
+      const baseDir = dependancyName.match(/^\.\//g) ? getDirectoryOfInputFile(process.argv[2]) : getProjectRoot(process.cwd());
+      resolveDependancy(dependancyName, { basedir: baseDir}, (err, val) => {
+        if(err) reject(err);
+        else resolve(val);
       });
     } catch(e) {
       reject(e);
     }
-    // const curriedResolve = R.curry(resolveDependancy);
-    // const c = curriedResolve(dependancyName, { basedir: process.cwd() });
-    // const promisedC = Promise.promisify(c);
-    // promisedC().then((val) => {
-    // resolve(val);
-    // }).catch(reject);
   });
 }
 
 function resolveMapDependanciesToFile(dependancies) {
   return R.map(resolveDependancyToFile, dependancies);
-}
-
-function safeAwait(promise, errorMessage) {
-  return promise.then(data => {
-    return data;
-  }).catch((error) => console.error(errorMessage + '\n Error was: ' + error.message));
 }
 
 async function start() {
@@ -73,10 +83,13 @@ async function start() {
 
   Promise.all(resolveMapDependanciesToFile(dependancies)).then(paths => {
     console.log(paths);
-  }).catch(console.error(
-    'Dependancy was not found in current project space. \
-    Are you sure you called Sideswipe from the project directory'
-  ));
+  }).catch(
+    (e) => { 
+      console.error(e);
+      console.error('Dependancy was not found in current project space. \
+                     Are you sure you called Sideswipe from the project directory?');
+    }
+  );
 
 }
 
