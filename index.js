@@ -10,7 +10,7 @@ function getDependanciesFromFile(fileName) {
   return new Promise((resolve, reject) => {
     if (!fileName || (fileName && !fs.existsSync(fileName))) {
       reject(new Error('Could not find passed file location'));
-      return null;
+      return [];
     }
 
     readFile(fileName).then((data) => {
@@ -29,19 +29,19 @@ function getDependanciesFromFile(fileName) {
       );
 
       const body = parseResults.program.body;
-      resolve(R.filter(e => !R.isNil(e), R.map((val) => {
-        if (val.type === 'ImportDeclaration') {
-          return (val.source.value);
-        }
+      resolve(R.map((val) => val.source.value, R.filter((val) => {
+        return (val.type === 'ImportDeclaration');
       }, body)));
     }).catch(reject);
+
+    return true;
   });
 }
 
-function transformImportString(importString) {
-  const reg = /^\.\//;
-  return importString.replace(reg, '');
-}
+// function transformImportString(importString) {
+// const reg = /^\.\//;
+// return importString.replace(reg, '');
+// }
 
 function transformInputToPath(input) {
   const reg = /\/\w+(\.\w+)?$/g;
@@ -64,11 +64,17 @@ function resolveDependancyToFile(dependancyName) {
       //In the case of relative paths i.e. ./components/component, we need to use the path of the 
       //input file to resolve it
       const baseDir = dependancyName.match(/^\.\//g) ? getDirectoryOfInputFile(process.argv[2]) : getProjectRoot(process.cwd());
-      console.log(baseDir);
-      resolveDependancy(dependancyName, { basedir: baseDir}, (err, val) => {
-        if(err) reject(err);
-        else resolve(val);
-      });
+      console.log(baseDir, dependancyName);
+      resolveDependancy(
+        dependancyName, 
+        { 
+          basedir: baseDir,
+          extensions: [ '.js' ],
+          moduleDirectory: 'node_modules'
+        }, (err, val) => {
+          if(err) reject(err);
+          else resolve(val);
+        });
     } catch(e) {
       reject(e);
     }
@@ -92,7 +98,8 @@ async function start() {
                      Are you sure you called Sideswipe from the project directory?');
     }
   );
-
+  
+  return true;
 }
 
 start();

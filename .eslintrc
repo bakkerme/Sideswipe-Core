@@ -3,28 +3,34 @@
         "es6": true,
         "node": true
     },
-    "extends": "eslint:recommended",
+    "extends": [ 
+      "eslint:recommended",
+      "plugin:fp/recommended"
+    ],
     "parserOptions": {
         "ecmaVersion": 2017,
         "sourceType": "module"
     },
+    "plugins": [
+      "fp"
+    ],
     "rules": {
-        "indent": [
-            "error",
-            2
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "no-console": "off",
+      "indent": [
+        "error",
+         2
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "no-console": "off"
     }
 }
