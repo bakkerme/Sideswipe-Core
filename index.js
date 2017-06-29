@@ -38,18 +38,12 @@ function getDependanciesFromFile(fileName) {
   });
 }
 
-// function transformImportString(importString) {
-// const reg = /^\.\//;
-// return importString.replace(reg, '');
-// }
-
 function transformInputToPath(input) {
-  const reg = /\/\w+(\.\w+)?$/g;
-  return input.replace(reg, '');
+  // Split input into it's slashes and rejoin it without the last value
+  return R.init(input.split('/'));
 }
 
 function getDirectoryOfInputFile(input) {
-  console.log('input', input);
   return `${process.cwd()}/${transformInputToPath(input)}`;
 }
 
