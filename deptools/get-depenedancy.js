@@ -6,6 +6,9 @@ const readFile = Promise.promisify(fs.readFile);
 const resolveDependancy = require('resolve');
 const { getDirectoryOfInputFile, getProjectRoot } = require('./path-utils');
 
+// Note: May want to provide extra directories to resolve node_modules from (eg. sourced from webpack.resolve.alias)
+//       `node-resolve` has a direct option for it.
+
 function getDependanciesFromFile(fileName) {
   return new Promise((resolve, reject) => {
     if (!fileName || (fileName && !fs.existsSync(fileName))) {
