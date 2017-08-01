@@ -7,7 +7,7 @@ let s:path = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 function! sideswipe#GetList()
   let s:file = expand('%')
   call sideswipe#CreateTreeWin()
-  echom s:path
+  echom s:file
   execute "read !node " . s:path . "/../../deptools/index.js " . s:file
 endfunction
 

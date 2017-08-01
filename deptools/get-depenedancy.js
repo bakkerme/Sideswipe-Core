@@ -54,7 +54,8 @@ function resolveDependancyToFile(dependancyName) {
     try {
       //In the case of relative paths i.e. ./components/component, we need to use the path of the 
       //input file to resolve it
-      const baseDir = dependancyName.match(/^\.\//g) ? getDirectoryOfInputFile(process.argv[2]) : getProjectRoot(process.cwd());
+
+      const baseDir = dependancyName.match(/^\./g) ? getDirectoryOfInputFile(process.argv[2]) : getProjectRoot(process.cwd());
       resolveDependancy(
         dependancyName, 
         { 
