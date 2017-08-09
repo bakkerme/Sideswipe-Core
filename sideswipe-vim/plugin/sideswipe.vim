@@ -5,10 +5,11 @@ let g:loaded_sideswipe = 1
 let s:path = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
 function! sideswipe#GetList()
+  let l:currWin = winnr() 
   let s:file = expand('%')
   call sideswipe#CreateTreeWin()
-  echom s:file
   silent! execute "read !node " . s:path . "/../../deptools/index.js " . s:file
+  call sideswipe#SwitchWindow('w',0,l:currWin)
 endfunction
 
 command SSGetList :call sideswipe#GetList()
@@ -18,12 +19,11 @@ function! sideswipe#CreateTreeWin()
    let splitSize = 100
 
    if !exists('t:SSBufName')
-     echom "not exsits"
      let t:SSBufName = 'ssbuf'
      silent! exec splitLocation . 'vertical ' .  splitSize . ' new'
      silent! exec "edit " .  t:SSBufName
+     autocmd BufEnter *.js call sideswipe#GetList()
   else
-    echom "exists"
     let wNum = sideswipe#FindWindow(t:SSBufName)
     call sideswipe#SwitchWindow("w",0,wNum)
     silent! exec "1,$d"
@@ -53,11 +53,11 @@ function! sideswipe#FindWindow(bufName)
 endfunction
 
 function! sideswipe#SwitchWindow(action, ...)   
-  if exists('a:1') && a:1 == 1     
-    let l:aucmd = 'noautocmd '   
-  else     
-    let l:aucmd = ''   
-  endif    
+  let l:aucmd = 'noautocmd '   
+  " if exists('a:1') && a:1 == 1     
+  " else     
+    " let l:aucmd = ''   
+  " endif    
   if exists('a:2')     
     let l:winnr = a:2   
   else    
